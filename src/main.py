@@ -1,9 +1,10 @@
+import numpy as np
 import tensorflow as tf
 from tensorflow.examples.tutorials.mnist import input_data
 #data = input_data.read_data_sets("MNIST_data/",one_hot=True)
 def _get_data(filename,label):
     image_string = tf.read_file(filename)
-    image_decoded = tf.image.decode_image(image_string)
+    image_decoded = tf.image.decode_jpeg(image_string)
     image_resized = tf.image.resize_images(image_decoded,[28,28])
     return image_resized,label
 
@@ -32,6 +33,15 @@ n_classes = 10
 x = tf.placeholder('float',[None,n_input])
 y = tf.placeholder('float',[None,n_classes])
 
+def next_batch(num,data,labels):
+    # Adapted from https://stackoverflow.com/questions/40994583/how-to-implement-tensorflows-next-batch-for-own-data
+    idx = np.arange(0,n_input)
+    np.random.shuffle(idx)
+    idx = idx[:num]
+    data_shuffle = [data[i] for i in idx]
+    labels_shuffle = [labels[i] for i in idx]
+    return np.asarray(data_shuffle),np.asarray(labels_shuffle)
+
 def multilayer_perceptron(x,weights,biases):
     layer_1 = tf.add(tf.matmul(x,weights['h1']),biases['b1'])
     layer_1 = tf.nn.relu(layer_1)
@@ -58,9 +68,9 @@ with tf.Session() as sess:
     sess.run(tf.global_variables_initializer())
     for epoch in range(training_epochs):
         avg_cost = 0.
-        total_batch = int(data.train.num_examples/batch_size)
+        total_batch = int(260/batch_size)
         for i in range(total_batch):
-            batch_x,batch_y = data.train.next_batch(batch_size)
+            batch_x,batch_y = next_batch(batch_size,x,y)
             _,c = sess.run([optimizer,cost],feed_dict={x:batch_x,y:batch_y})
             avg_cost += c / total_batch
         if epoch % display_step == 0:
