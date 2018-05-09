@@ -71,6 +71,8 @@ with tf.Session() as sess:
         total_batch = int(260/batch_size)
         for i in range(total_batch):
             batch_x,batch_y = next_batch(batch_size,x,y)
+            for i,x in enumerate(batch_x):
+                batch_x[i] = x.eval()
             _,c = sess.run([optimizer,cost],feed_dict={x:batch_x,y:batch_y})
             avg_cost += c / total_batch
         if epoch % display_step == 0:
