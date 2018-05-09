@@ -1,4 +1,4 @@
-# Term 4 Studio Project @khanlabschool: Nikhil - Abhi
+# Term 4 Studio Project @khanlabschool: Nikhil Gargeya - Abhinav Vedati
 
 To run the program, you will first need:
  - Python3.x
