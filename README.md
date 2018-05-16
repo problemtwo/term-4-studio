@@ -1,9 +1,15 @@
 # Term 4 Studio Project @khanlabschool: Nikhil Gargeya - Abhinav Vedati
 
-To run the program, you will first need:
+Requirements:
  - Python3.x
- - Numpy
- - Tensorflow
+ - OpenCV 2
+
+To install OpenCV run the following commands in a terminal.
+ ```bash
+ pip3 install opencv
+ ```
+ 
+ To run the program run the following commands in a terminal.
 
  ```bash
  cd src
