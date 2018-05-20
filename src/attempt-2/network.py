@@ -12,11 +12,11 @@ def read_images():
     images = []
     for i in range(2,262):
         print('Reading image ' + str(i-1) + ' of 260')
-        images.append(cv2.imread('../training/images/IMG_' + fmt(i) + '.JPG'))
+        images.append(cv2.imread('../../training/images/IMG_' + fmt(i) + '.JPG'))
     return images
 
 def read_labels():
-    f = open('../training/labels-1.txt','r')
+    f = open('../../training/labels-1.txt','r')
     return list(f)
         
 
@@ -123,16 +123,22 @@ hidden_1_size = 256
 hidden_2_size = 256
 classes_size = 2
 
-weights = [
-            [[1 for i in range(image_size)] for j in range(hidden_1_size)],
-            [[1 for i in range(hidden_1_size)] for j in range(hidden_2_size)],
-            [[1 for i in range(hidden_2_size)] for j in range(classes_size)],
-        ]
-biases = [
-            [1 for i in range(hidden_1_size)],
-            [1 for i in range(hidden_2_size)],
-            [1 for i in range(classes_size)],
-        ]
+#weights = [
+#            [[1 for i in range(image_size)] for j in range(hidden_1_size)],
+#            [[1 for i in range(hidden_1_size)] for j in range(hidden_2_size)],
+#            [[1 for i in range(hidden_2_size)] for j in range(classes_size)],
+#        ]
+#biases = [
+#            [1 for i in range(hidden_1_size)],
+#            [1 for i in range(hidden_2_size)],
+#            [1 for i in range(classes_size)],
+#        ]
+weights = []
+numbers = range(-1000,1000)
+for j in range(hidden_1_size):
+    for i in range(image_size):
+        weights += [random.sample(numbers,1) for i in range(1000000)]
+        print('j: {}, i: {}'.format(j,i))
 
 prediction = multilayer_perceptron(images,weights,biases)
 print(prediction)
