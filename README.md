@@ -1,17 +1,31 @@
 # Term 4 Studio Project @khanlabschool: Nikhil Gargeya - Abhinav Vedati
 
-Requirements:
+## Requirements:
  - Python3.x
  - OpenCV 2
 
-To install OpenCV run the following commands in a terminal.
+## Installing OpenCV:
+
+### Ubuntu/Debian
+
  ```bash
- pip3 install opencv
+  sudo apt install python-opencv
+ ```
+
+### MacOS
+
+ ```bash
+  brew install opencv
  ```
  
- To run the program run the following commands in a terminal.
+## Running the program
 
  ```bash
  cd src
- python3 main.py
+ python3 make_cascade.py
+ python3 create_bg_txt.py
+ chmod +x create_samples.bash
+ ./create_samples.bash
+ chmod +x train_cascade.bash
+ ./train_cascade.bash
  ```
