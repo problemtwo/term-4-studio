@@ -4,4 +4,4 @@
 if [ ! -d ./create_samples_output/ ]; then
  mkdir create_samples_output
 fi
-opencv_traincascade -data info/pos -vec positives.vec -bg bg.txt -numPos 900 -numNeg 450 -numStages 10 -w 50 -h 71
+opencv_traincascade -data create_samples_output -vec positives.vec -bg bg.txt -numPos 40 -numNeg 20 -numStages 10 -w 50 -h 71
