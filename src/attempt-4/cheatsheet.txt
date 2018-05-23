@@ -1,0 +1,5 @@
+1. Get images
+2. Make BG.txt file
+3. Create samples
+4. Create positives.vec file
+5. Train cascade

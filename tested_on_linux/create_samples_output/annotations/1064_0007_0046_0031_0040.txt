@@ -1,0 +1,2 @@
+Image filename : "create_samples_output/pos/1064_0007_0046_0031_0040.png"
+Bounding box for object 1 "PASperson" (Xmin, Ymin) - (Xmax, Ymax) : (7, 46) - (38, 86)
