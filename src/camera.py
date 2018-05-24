@@ -1,12 +1,21 @@
 # Made with help from https://www.hackster.io/mjrobot/real-time-face-recognition-an-end-to-end-project-a10826
 
-import cv2
-import math
-import numpy as np
-import os
-import sys
-from PIL import Image
+import cv2 # OpenCV2 (Open Source Computer Vision 2) is a library that helps with
+           # displaying graphics, image manipulation, and (in this case) facial recognition
 
+import math # The python math library, used for the floor function
+import numpy as np # (Sorry Nikhil :) ) We are using numpy because opencv uses numpy arrays,
+                   # and we need to convert the list of ids (in the train function) to a numpy array.
+import os # The os module is used to string together paths to find the images and the ids.
+import sys # The sys module is used solely for argv, which provides user input to the program
+           # via a terminal / command prompt.
+from PIL import Image # PIL Images are used to load the images to train the cascade. OpenCV will save
+                      # the each frame in which it detects a face into a directory of our choice, so
+                      # we use PIL to read the images.
+
+# The `detect` function opens up the images from the data directory, and uses their names to create 
+# the ids for those images. WARNING: the lists `detected` and `ids` must be the same length (which
+# means that the cascade must only detect one face), or else OpenCV will throw an exception.
 def detect(cascade):
     path = 'data'
     images = [Image.open(os.path.join(path,filename)).convert('L') for filename in os.listdir(path)]
@@ -20,21 +29,33 @@ def detect(cascade):
     return detected,ids
 
 
+# The `train` function will take the faces that were detected and their ids (provided by the `detect`
+# function), and will train an LBPH (Local Binary Patterns Histograms) Face Recognizer to detect each
+# particular type of face. The LBPH Recognizer can save into a Yaml file, which is convenient if the
+# program is stopped, because it can start again without losing any progress. Also, after the cascade
+# has finished training, it can train again because the progress is saved.
 def train(cascade):
     rec = cv2.face.LBPHFaceRecognizer_create()
     detected,ids = detect(cascade)
     rec.train(detected,np.array([int(i) for i in ids]))
     rec.write('trainer.yml')
 
+# The `predict` function will read the data from the Yaml file, and create a Local Binary Patterns
+# Histograms Face Recognizer from that Yaml file. It returns a name (or Unknown / Error if something
+# unexpected happened), and a confidence which is a percentage out of 100.
 def predict(part_of_image):
     rec = cv2.face.LBPHFaceRecognizer_create()
     rec.read('trainer.yml')
-    names = ['Error','Abhi']
+    names = ['Error','Abhi','Sohm']
     iden,conf = rec.predict(part_of_image)
     if conf < 100:
         return names[iden],conf
     return 'Unknown',conf
 
+# The `start` function projects a grayscale version of the camera's video. Depending on the flags passed
+# into the program, this function might either prompt the user about the user's identity (which is a number
+# from 1 to infinity), or it might display text conveying the cascade's prediction about the user's indentity,
+# and how confident it is about it's prediction.
 def start(pred=False):
     camera = cv2.VideoCapture(0)
     camera.set(3,600)
@@ -58,8 +79,8 @@ def start(pred=False):
             if pred:
                 iden,conf = predict(gray_frame[y:y+h,x:x+w])
                 font = cv2.FONT_HERSHEY_SIMPLEX
-                cv2.putText(gray_frame,'Guess:'+str(iden),(x+10,y-10),font,1,(255,255,255),2)
-                cv2.putText(gray_frame,'Confidence:'+str(math.floor(conf)),(x-10,y+h-10),font,1,(255,255,255),1)
+                cv2.putText(gray_frame,'Guess:'+str(iden),(x+10,y-10),font,1,(127,127,127),2)
+                cv2.putText(gray_frame,'Confidence:'+str(math.floor(conf)),(x-10,y+h-10),font,1,(127,127,127),1)
             else:
                 cv2.rectangle(gray_frame,(x,y),(x+w,y+h),(0,255,0),2)
                 num_faces += 1
@@ -74,6 +95,12 @@ def start(pred=False):
 
 
 
+# The `main` function reads from the arguments passed to the python interpreter, and it performs different operations
+# depending on the flag.
+# -d: The program is in data mode. It will ask the user about their identity, and then proceed to record the user's face.
+# -t: The program is in train mode. It will simply train the LBPH Recognizer and quit.
+# -p: The program is in predict mode. It will display text on the screen conveying it's prediction about who it is seeing,
+#     as well as how confident it is.
 def main():
     if len(sys.argv) > 1:
         if sys.argv[1][1] == 'd':
